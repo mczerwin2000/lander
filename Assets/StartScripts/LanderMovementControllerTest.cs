@@ -40,7 +40,7 @@ public class LanderMovementControllerTest : MonoBehaviour
         }
         else if (_onGround == 7) {
             Debug.Log(rb2D.velocity.y);
-            //test;
+            //test2;
         }
         tr.position = new Vector3(-5, 10, 0);
         rb2D.velocity = new Vector2(0, 0);
