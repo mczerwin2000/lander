@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/*
+ * Trigger for the lander
+ * Return hit GameObject
+ */
 public class TriggerEventFire : MonoBehaviour
 {
     public UnityEvent<GameObject> OnTriggerChange;
@@ -10,9 +14,4 @@ public class TriggerEventFire : MonoBehaviour
     {
         OnTriggerChange?.Invoke(collision.gameObject);
     }
-
-   /* private void OnTriggerExit2D(Collider2D collision)
-    {
-        OnTriggerChange?.Invoke(collision.gameObject);
-    }*/
 }
