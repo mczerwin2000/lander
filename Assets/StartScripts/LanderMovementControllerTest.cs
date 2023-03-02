@@ -44,11 +44,17 @@ public class LanderMovementControllerTest : MonoBehaviour
             score += info.getPoints();
             Debug.Log(score);
         }
+        StartCoroutine(Freeze());
+        Time.timeScale = 0f;
+    }
+
+    IEnumerator Freeze() {
+        yield return new WaitForSecondsRealtime(3f);
+        Time.timeScale = 1;
         tr.position = new Vector3(-5, 10, 0);
         rb2D.velocity = new Vector2(0, 0);
         rb2D.rotation = 0;
     }
-
     private void Update()
     {
         velocity = rb2D.velocity;
@@ -57,18 +63,11 @@ public class LanderMovementControllerTest : MonoBehaviour
         {
             if(tr.rotation.eulerAngles.z > 270 || tr.rotation.eulerAngles.z < 180)
                 rb2D.rotation -= speedRotate * Time.deltaTime;
-            
-            //    tr.Rotate(rotate,-speedRotate * Time.deltaTime );
-            //Debug.Log(tr.rotation.eulerAngles.z);
-            //Debug.Log(velocity.y);
         }
         if (Input.GetKey(KeyCode.A))
         {
             if(tr.rotation.eulerAngles.z < 90 || tr.rotation.eulerAngles.z > 180)
                 rb2D.rotation += speedRotate * Time.deltaTime;
-            
-            //    tr.Rotate(rotate, speedRotate * Time.deltaTime);
-           // Debug.Log(tr.rotation.eulerAngles.z);
         }
         
         if (Input.GetKey(KeyCode.W) && fuel > 0)
