@@ -33,16 +33,35 @@ public class LanderMovementControllerTest : MonoBehaviour
     public void OnGroundChanged(GameObject _onGround)
     {
         int layer = _onGround.layer;
-        if(layer > -1)
-            Debug.Log(layer);
         if (layer == 6) {
-            fuel -= 100f + (fuel * 0.15f);
-            Debug.Log(fuel);
+            fuel -= 100f + (fuel * 0.2f);
+            Debug.Log("FAIL - hit ground");
+            Debug.Log("FUEL: " + fuel);
         }
         else if (layer == 7) {
-            PlatformData info = _onGround.GetComponent<PlatformData>();
-            score += info.getPoints();
-            Debug.Log(score);
+            if (tr.rotation.eulerAngles.z < 15 || tr.rotation.eulerAngles.z > 345)
+            {
+                if (rb2D.velocity.y > -1.25)
+                {
+                    PlatformData info = _onGround.GetComponent<PlatformData>();
+                    score += info.getPoints();
+                    Debug.Log("SUCCESS");
+                    Debug.Log("Score: " + score);
+                    Debug.Log("FUEL: " + fuel);
+                }
+                else {
+                    fuel -= 100f + (fuel * 0.15f);
+                    Debug.Log("FAIL - landed too fast");
+                    Debug.Log("SPEED: " + rb2D.velocity.y);
+                    Debug.Log("FUEL: " + fuel);
+                }
+            }
+            else {
+                fuel -= 100f + (fuel * 0.15f);
+                Debug.Log("FAIL - landed too badly");
+                Debug.Log("FUEL: " + fuel);
+            }
+            
         }
         StartCoroutine(Freeze());
         Time.timeScale = 0f;
