@@ -21,14 +21,15 @@ public class TriggerEventFire : MonoBehaviour
     }
     */
 
-    public UnityEvent<int> OnTriggerChange;
+    public UnityEvent<GameObject> OnTriggerChange;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        OnTriggerChange?.Invoke(collision.gameObject.layer);
+        //collision.gameObject.GetComponent<PlatformData>();
+        OnTriggerChange?.Invoke(collision.gameObject);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+   /* private void OnTriggerExit2D(Collider2D collision)
     {
-        OnTriggerChange?.Invoke(-1);
-    }
+        OnTriggerChange?.Invoke(collision.gameObject);
+    }*/
 }

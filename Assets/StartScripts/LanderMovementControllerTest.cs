@@ -9,6 +9,7 @@ public class LanderMovementControllerTest : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float speedRotate;
+    [SerializeField] private int score = 0;
     [SerializeField] private float fuel = 1000;
     [SerializeField] private float fuelUsage = 50;
     //[SerializeField] private readonly Vector3 startPosition = new Vector3(-5f,10f, 0f);
@@ -29,18 +30,19 @@ public class LanderMovementControllerTest : MonoBehaviour
         Debug.Log(_onGround);
     }
     */
-    public void OnGroundChanged(int _onGround)
+    public void OnGroundChanged(GameObject _onGround)
     {
-        if(_onGround > -1)
-            Debug.Log(_onGround);
-        if (_onGround == 6) {
-            //tr.position.x = -5;
+        int layer = _onGround.layer;
+        if(layer > -1)
+            Debug.Log(layer);
+        if (layer == 6) {
             fuel -= 100f + (fuel * 0.15f);
             Debug.Log(fuel);
         }
-        else if (_onGround == 7) {
-            Debug.Log(rb2D.velocity.y);
-            //test2;
+        else if (layer == 7) {
+            PlatformData info = _onGround.GetComponent<PlatformData>();
+            score += info.getPoints();
+            Debug.Log(score);
         }
         tr.position = new Vector3(-5, 10, 0);
         rb2D.velocity = new Vector2(0, 0);
@@ -50,18 +52,6 @@ public class LanderMovementControllerTest : MonoBehaviour
     private void Update()
     {
         velocity = rb2D.velocity;
-        /*
-        float currentSpped = 0f;
-        if (Input.GetKey(KeyCode.D)) {
-            currentSpped += speed;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            currentSpped += -1f*speed;
-        }
-        velocity.x = currentSpped;
-        rb2D.velocity = velocity;*/
-
 
         if (Input.GetKey(KeyCode.D))
         {
@@ -88,7 +78,7 @@ public class LanderMovementControllerTest : MonoBehaviour
        
             //fuel
             fuel -= fuelUsage*Time.deltaTime;
-            Debug.Log(fuel);
+            //Debug.Log(fuel);
         }
     }
 }
