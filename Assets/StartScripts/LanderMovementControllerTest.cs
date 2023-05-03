@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class LanderMovementControllerTest : MonoBehaviour
@@ -14,11 +15,20 @@ public class LanderMovementControllerTest : MonoBehaviour
     private Rigidbody2D rb2D;
     private Vector2 velocity = new Vector2();
     private Transform tr;
+
+    [SerializeField] private Text fuelText;
+    [SerializeField] private Text scoreText;
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
         tr = transform;
         rb2D.constraints = RigidbodyConstraints2D.None;
+    }
+
+    private void Start()
+    {
+        fuelText.text += ((int)fuel).ToString();
+        scoreText.text += score.ToString();
     }
 
     public void OnGroundChanged(GameObject _onGround)
@@ -61,6 +71,7 @@ public class LanderMovementControllerTest : MonoBehaviour
     // If it has a fuel,it return the lander to start position
     // Otherwise it's the end of game
     IEnumerator Freeze() {
+        scoreText.text = "Score: " + score.ToString();
         yield return new WaitForSecondsRealtime(3f);
         Time.timeScale = 1;
         if (fuel > 0)
@@ -95,5 +106,7 @@ public class LanderMovementControllerTest : MonoBehaviour
        
             fuel -= fuelUsage*Time.deltaTime;
         }
+
+        fuelText.text = "Fuel: " + ((int)fuel).ToString();
     }
 }
