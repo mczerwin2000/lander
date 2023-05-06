@@ -18,6 +18,9 @@ public class LanderMovementControllerTest : MonoBehaviour
 
     [SerializeField] private Text fuelText;
     [SerializeField] private Text scoreText;
+    [SerializeField] private Text highestScoreText;
+
+    //[SerializeField] private GameObject MenuPause;
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -29,6 +32,8 @@ public class LanderMovementControllerTest : MonoBehaviour
     {
         fuelText.text += ((int)fuel).ToString();
         scoreText.text += score.ToString();
+        SaveGame.LoadProgress();
+        highestScoreText.text += SaveGame.getHighestScore().ToString();
     }
 
     public void OnGroundChanged(GameObject _onGround)
@@ -63,8 +68,11 @@ public class LanderMovementControllerTest : MonoBehaviour
                 Debug.Log("FUEL: " + fuel);
             }
         }
-        StartCoroutine(Freeze());
-        Time.timeScale = 0f;
+        if(layer == 6 || layer == 7)
+        {
+            StartCoroutine(Freeze());
+            Time.timeScale = 0f;
+        }
     }
 
     // Freeze a game for 3 seconds 
@@ -72,16 +80,25 @@ public class LanderMovementControllerTest : MonoBehaviour
     // Otherwise it's the end of game
     IEnumerator Freeze() {
         scoreText.text = "Score: " + score.ToString();
-        yield return new WaitForSecondsRealtime(3f);
-        Time.timeScale = 1;
+        if (score > SaveGame.getHighestScore()) {
+            highestScoreText.text = "Highest Score: " + score.ToString();
+            SaveGame.setHighestScore(score);
+            SaveGame.SaveProgress();
+        }
         if (fuel > 0)
         {
             tr.position = new Vector3(-5, 10, 0); // starting position
             rb2D.velocity = new Vector2(0, 0);    // reset a speed
             rb2D.rotation = 0;                    // reset a rotation
         }
-        else {
+        else
+        {
             Debug.Log("NO FUEL - END OF THE GAME");
+        }
+        yield return new WaitForSecondsRealtime(3f);
+        if (!menuScript.gameIsPaused)
+        {
+            Time.timeScale = 1;
         }
     }
     private void Update()
