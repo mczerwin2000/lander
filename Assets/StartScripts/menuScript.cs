@@ -7,11 +7,13 @@ public class menuScript : MonoBehaviour
 {
     public static bool gameIsPaused = false;
     [SerializeField] private GameObject PauseMenuUI;
+    [SerializeField] private GameObject Lander;
+
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(ButtonSettings.KeyPause)) {
             if (gameIsPaused)
             {
                 Resume();
@@ -42,5 +44,10 @@ public class menuScript : MonoBehaviour
     public void QuitGame() {
         Debug.Log("Quitting the game...");
         Application.Quit();
+    }
+
+    public void Rewind() {
+        Lander.GetComponent<LanderMovementControllerTest>().Rewind();
+        Resume();
     }
 }

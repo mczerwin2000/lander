@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UI;
+using UnityEngine.SocialPlatforms.Impl;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class LanderMovementControllerTest : MonoBehaviour
+public class LanderMovementControllerTest : MonoBehaviour, IEntity
 {
     [SerializeField] private float speed;
     [SerializeField] private float speedRotate;
@@ -15,6 +16,13 @@ public class LanderMovementControllerTest : MonoBehaviour
     private Rigidbody2D rb2D;
     private Vector2 velocity = new Vector2();
     private Transform tr;
+    private int lastScore = 0;
+    private float lastFuel = 1000;
+
+    private InputHandler inputHandler = new InputHandler();
+    private RotationCommand left;
+    private RotationCommand right;
+    private UpCommand up;
 
     [SerializeField] private Text fuelText;
     [SerializeField] private Text scoreText;
@@ -26,6 +34,9 @@ public class LanderMovementControllerTest : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
         tr = transform;
         rb2D.constraints = RigidbodyConstraints2D.None;
+        left = new RotationCommand(this, rb2D, speedRotate, 1);
+        right = new RotationCommand(this, rb2D, speedRotate, -1);
+        up = new UpCommand(this, rb2D, tr, speed, fuel, fuelUsage);
     }
 
     private void Start()
@@ -68,6 +79,7 @@ public class LanderMovementControllerTest : MonoBehaviour
                 Debug.Log("FUEL: " + fuel);
             }
         }
+        up.setFuel(fuel);
         if(layer == 6 || layer == 7)
         {
             StartCoroutine(Freeze());
@@ -80,6 +92,8 @@ public class LanderMovementControllerTest : MonoBehaviour
     // Otherwise it's the end of game
     IEnumerator Freeze() {
         scoreText.text = "Score: " + score.ToString();
+        lastFuel= fuel;
+        lastScore = score;
         if (score > SaveGame.getHighestScore()) {
             highestScoreText.text = "Highest Score: " + score.ToString();
             SaveGame.setHighestScore(score);
@@ -96,6 +110,7 @@ public class LanderMovementControllerTest : MonoBehaviour
             Debug.Log("NO FUEL - END OF THE GAME");
         }
         yield return new WaitForSecondsRealtime(3f);
+        Debug.Log(!menuScript.gameIsPaused);
         if (!menuScript.gameIsPaused)
         {
             Time.timeScale = 1;
@@ -103,7 +118,17 @@ public class LanderMovementControllerTest : MonoBehaviour
     }
     private void Update()
     {
-        velocity = rb2D.velocity;
+        if (tr.rotation.eulerAngles.z > 270 || tr.rotation.eulerAngles.z < 180)
+        {
+            inputHandler.Rotation(ButtonSettings.KeyRight, right);
+        }
+        if (tr.rotation.eulerAngles.z < 90 || tr.rotation.eulerAngles.z > 180)
+        {
+            inputHandler.Rotation(ButtonSettings.KeyLeft, left);
+        }
+        inputHandler.Up(ButtonSettings.KeyUp, up);
+        fuel = up.GetFuel();
+        /*velocity = rb2D.velocity;
 
         if (Input.GetKey(KeyCode.D))
         {
@@ -115,15 +140,25 @@ public class LanderMovementControllerTest : MonoBehaviour
             if(tr.rotation.eulerAngles.z < 90 || tr.rotation.eulerAngles.z > 180) // Check acceptable angle for a left rotation
                 rb2D.rotation += speedRotate * Time.deltaTime;
         }
-        
-        if (Input.GetKey(KeyCode.W) && fuel > 0)
+        */
+        /*if (Input.GetKey(KeyCode.W) && fuel > 0)
         {
             velocity = speed * tr.up * Time.deltaTime;
             rb2D.velocity += velocity;
        
             fuel -= fuelUsage*Time.deltaTime;
-        }
+        }*/
+        
+
 
         fuelText.text = "Fuel: " + ((int)fuel).ToString();
+    }
+
+    public void Rewind() {
+        tr.position = new Vector3(-5, 10, 0); // starting position
+        rb2D.velocity = new Vector2(0, 0);    // reset a speed
+        rb2D.rotation = 0;
+        score = lastScore;
+        fuel = lastFuel;
     }
 }

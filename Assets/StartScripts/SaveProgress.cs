@@ -13,23 +13,20 @@ public static class SaveGame
     [Serializable]
     private class SaveData
     {
-       private int highestScore = 0;
-
-        public void setHighestScore(int score) { 
-            this.highestScore= score;
-        }
-
-        public int getHighestScore()
-        {
-            return this.highestScore;
-        }
+       public int highestScore = 0;
+       public KeyCode up = KeyCode.W;
+       public KeyCode left = KeyCode.A;
+       public KeyCode right = KeyCode.D;
     }
 
     public static void SaveProgress()
     {
         SaveData saveData = new SaveData();
-        saveData.setHighestScore(SaveGame.highestScore);
-        Debug.Log(saveData.getHighestScore());
+        saveData.highestScore = SaveGame.highestScore;
+        saveData.up = ButtonSettings.KeyUp;
+        saveData.left = ButtonSettings.KeyLeft;
+        saveData.right = ButtonSettings.KeyRight;
+        Debug.Log(saveData.highestScore);
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/" + SaveGame.profile + ".dat");
         Debug.Log("Saving game");
@@ -46,12 +43,30 @@ public static class SaveGame
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream file = File.Open(Application.persistentDataPath + "/" + SaveGame.profile + ".dat", FileMode.Open);
             SaveData saveData = (SaveData)formatter.Deserialize(file);
-            Debug.Log(saveData.getHighestScore());
-            SaveGame.highestScore = saveData.getHighestScore();
+            Debug.Log(saveData.highestScore);
+            SaveGame.highestScore = saveData.highestScore;
+            ButtonSettings.KeyUp = saveData.up;
+            ButtonSettings.KeyLeft = saveData.left;
+            ButtonSettings.KeyRight = saveData.right;
+            if (ButtonSettings.KeyUp == KeyCode.None) {
+                ButtonSettings.KeyUp = KeyCode.W;
+            }
+            if (ButtonSettings.KeyLeft == KeyCode.None)
+            {
+                ButtonSettings.KeyLeft = KeyCode.A;
+            }
+            if (ButtonSettings.KeyRight == KeyCode.None)
+            {
+                ButtonSettings.KeyRight = KeyCode.D;
+            }
+            Debug.Log(ButtonSettings.KeyUp);
             file.Close();
         }
         else { 
             SaveGame.highestScore = 0;
+            ButtonSettings.KeyUp = KeyCode.W;
+            ButtonSettings.KeyLeft = KeyCode.A;
+            ButtonSettings.KeyRight = KeyCode.D;
         }
     }
 
