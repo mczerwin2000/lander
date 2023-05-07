@@ -5,10 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class menuScript : MonoBehaviour
 {
-    public static bool gameIsPaused = false;
+    private static bool gameIsPaused = false;
     [SerializeField] private GameObject PauseMenuUI;
+    [SerializeField] private GameObject DeathMenu;
     [SerializeField] private GameObject Lander;
+    [SerializeField] private Animator end;
 
+
+    public bool isGamePaused() {
+        return gameIsPaused;
+    }
 
     // Update is called once per frame
     void Update()
@@ -38,6 +44,13 @@ public class menuScript : MonoBehaviour
     public void GoToMenu() {
         Debug.Log("Loading Start Menu...");
         Time.timeScale = 1f;
+        StartCoroutine(loadMenu());
+    }
+
+    IEnumerator loadMenu()
+    {
+        end.SetTrigger("Start");
+        yield return new WaitForSecondsRealtime(1f);
         SceneManager.LoadScene("Scenes/MainMenu");
     }
 
@@ -49,5 +62,11 @@ public class menuScript : MonoBehaviour
     public void Rewind() {
         Lander.GetComponent<LanderMovementControllerTest>().Rewind();
         Resume();
+    }
+
+    public void NewGame() {
+        DeathMenu.SetActive(false);
+        Time.timeScale = 1f;
+        Lander.GetComponent<LanderMovementControllerTest>().Restart();
     }
 }

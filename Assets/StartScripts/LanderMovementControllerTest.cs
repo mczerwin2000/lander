@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.Impl;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class LanderMovementControllerTest : MonoBehaviour, IEntity
@@ -13,8 +14,9 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     [SerializeField] private int score = 0;
     [SerializeField] private float fuel = 1000;
     [SerializeField] private float fuelUsage = 50;
+    [SerializeField] private GameObject DeathMenu;
     private Rigidbody2D rb2D;
-    private Vector2 velocity = new Vector2();
+    //private Vector2 velocity = new Vector2();
     private Transform tr;
     private int lastScore = 0;
     private float lastFuel = 1000;
@@ -104,16 +106,18 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
             tr.position = new Vector3(-5, 10, 0); // starting position
             rb2D.velocity = new Vector2(0, 0);    // reset a speed
             rb2D.rotation = 0;                    // reset a rotation
+            yield return new WaitForSecondsRealtime(3f);
+            menuScript paused = FindFirstObjectByType(typeof(menuScript)).GetComponent<menuScript>();
+            Debug.Log(!paused.isGamePaused());
+            if (!paused.isGamePaused())
+            {
+                Time.timeScale = 1;
+            }
         }
         else
         {
             Debug.Log("NO FUEL - END OF THE GAME");
-        }
-        yield return new WaitForSecondsRealtime(3f);
-        Debug.Log(!menuScript.gameIsPaused);
-        if (!menuScript.gameIsPaused)
-        {
-            Time.timeScale = 1;
+            Death();
         }
     }
     private void Update()
@@ -154,11 +158,28 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         fuelText.text = "Fuel: " + ((int)fuel).ToString();
     }
 
+    private void Death()
+    {
+        Time.timeScale = 0f;
+        DeathMenu.SetActive(true);
+    }
+
     public void Rewind() {
         tr.position = new Vector3(-5, 10, 0); // starting position
         rb2D.velocity = new Vector2(0, 0);    // reset a speed
         rb2D.rotation = 0;
         score = lastScore;
         fuel = lastFuel;
+        up.setFuel(fuel);
+    }
+
+    public void Restart()
+    {
+        tr.position = new Vector3(-5, 10, 0); // starting position
+        rb2D.velocity = new Vector2(0, 0);    // reset a speed
+        rb2D.rotation = 0;
+        score = 0;
+        fuel = 1000;
+        up.setFuel(fuel);
     }
 }
