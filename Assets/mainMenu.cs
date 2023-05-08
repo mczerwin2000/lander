@@ -14,7 +14,6 @@ public class mainMenu : MonoBehaviour
     [SerializeField] private InputField right;
     private string validNumbers = "0123456789";
     private string validletters = "qwertyuiopasdfghjklzxcvbnm".ToUpper() + "0123456789";
-    
 
     public void Start()
     {
