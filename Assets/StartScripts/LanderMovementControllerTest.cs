@@ -15,11 +15,13 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     [SerializeField] private float fuel = 1000;
     [SerializeField] private float fuelUsage = 50;
     [SerializeField] private GameObject DeathMenu;
+    [SerializeField] private GameObject lostConnectionMenu;
     private Rigidbody2D rb2D;
     //private Vector2 velocity = new Vector2();
     private Transform tr;
     private int lastScore = 0;
     private float lastFuel = 1000;
+    private bool outOfMap = false;
 
     private InputHandler inputHandler = new InputHandler();
     private RotationCommand left;
@@ -132,35 +134,13 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         }
         inputHandler.Up(ButtonSettings.KeyUp, up);
         fuel = up.GetFuel();
-        /*velocity = rb2D.velocity;
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            if(tr.rotation.eulerAngles.z > 270 || tr.rotation.eulerAngles.z < 180) // Check acceptable angle for a right rotation
-                rb2D.rotation -= speedRotate * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            if(tr.rotation.eulerAngles.z < 90 || tr.rotation.eulerAngles.z > 180) // Check acceptable angle for a left rotation
-                rb2D.rotation += speedRotate * Time.deltaTime;
-        }
-        */
-        /*if (Input.GetKey(KeyCode.W) && fuel > 0)
-        {
-            velocity = speed * tr.up * Time.deltaTime;
-            rb2D.velocity += velocity;
-       
-            fuel -= fuelUsage*Time.deltaTime;
-        }*/
-        
-
-
         fuelText.text = "Fuel: " + ((int)fuel).ToString();
     }
 
     private void Death()
     {
         Time.timeScale = 0f;
+        StopCoroutine("lostConnection");
         DeathMenu.SetActive(true);
     }
 
@@ -170,6 +150,9 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         rb2D.rotation = 0;
         score = lastScore;
         fuel = lastFuel;
+        outOfMap = false;
+        StopCoroutine("lostConnection");
+        lostConnectionMenu.SetActive(false);
         up.setFuel(fuel);
     }
 
@@ -180,6 +163,30 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         rb2D.rotation = 0;
         score = 0;
         fuel = 1000;
+        outOfMap = false;
+        StopCoroutine("lostConnection");
+        lostConnectionMenu.SetActive(false);
         up.setFuel(fuel);
     }
+    public void InOutOfMap(bool inOut) {
+        outOfMap = inOut;
+        Debug.Log("InOut: " + outOfMap);
+        if (inOut)
+        {
+            lostConnectionMenu.SetActive(true);
+            StartCoroutine("lostConnection");
+        }
+        else {
+            lostConnectionMenu.SetActive(false);
+            StopCoroutine("lostConnection");
+        }
+    }
+
+    IEnumerator lostConnection() {
+        yield return new WaitForSeconds(15f);
+        lostConnectionMenu.SetActive(false);
+        Death();
+    }
+
+
 }
