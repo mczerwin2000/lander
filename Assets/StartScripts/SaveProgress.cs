@@ -10,10 +10,18 @@ public static class SaveGame
 {
     private static int highestScore;
     private static String profile = "profile1";
+    public static bool pointsAch = false;
+    public static bool landing2137Ach = false;
+    public static bool crashLandingAch = false;
+    public static bool lostTreasureAch = false;
     [Serializable]
     private class SaveData
     {
        public int highestScore = 0;
+       public bool pointsAch = false;
+       public bool landing2137Ach = false;
+       public bool crashLandingAch = false;
+       public bool lostTreasureAch = false;
        public KeyCode up = KeyCode.W;
        public KeyCode left = KeyCode.A;
        public KeyCode right = KeyCode.D;
@@ -23,10 +31,13 @@ public static class SaveGame
     {
         SaveData saveData = new SaveData();
         saveData.highestScore = SaveGame.highestScore;
+        saveData.pointsAch = SaveGame.pointsAch;
+        saveData.landing2137Ach = SaveGame.landing2137Ach;
+        saveData.crashLandingAch= SaveGame.crashLandingAch;
+        saveData.lostTreasureAch = SaveGame.lostTreasureAch;
         saveData.up = ButtonSettings.KeyUp;
         saveData.left = ButtonSettings.KeyLeft;
         saveData.right = ButtonSettings.KeyRight;
-        Debug.Log(saveData.highestScore);
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/" + SaveGame.profile + ".dat");
         Debug.Log("Saving game");
@@ -43,8 +54,11 @@ public static class SaveGame
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream file = File.Open(Application.persistentDataPath + "/" + SaveGame.profile + ".dat", FileMode.Open);
             SaveData saveData = (SaveData)formatter.Deserialize(file);
-            Debug.Log(saveData.highestScore);
             SaveGame.highestScore = saveData.highestScore;
+            SaveGame.pointsAch= saveData.pointsAch;
+            SaveGame.landing2137Ach= saveData.landing2137Ach;
+            SaveGame.crashLandingAch= saveData.crashLandingAch;
+            SaveGame.lostTreasureAch = saveData.lostTreasureAch;
             ButtonSettings.KeyUp = saveData.up;
             ButtonSettings.KeyLeft = saveData.left;
             ButtonSettings.KeyRight = saveData.right;
@@ -59,11 +73,14 @@ public static class SaveGame
             {
                 ButtonSettings.KeyRight = KeyCode.D;
             }
-            Debug.Log(ButtonSettings.KeyUp);
             file.Close();
         }
         else { 
             SaveGame.highestScore = 0;
+            pointsAch = false;
+            landing2137Ach = false;
+            crashLandingAch = false;
+            lostTreasureAch = false;
             ButtonSettings.KeyUp = KeyCode.W;
             ButtonSettings.KeyLeft = KeyCode.A;
             ButtonSettings.KeyRight = KeyCode.D;

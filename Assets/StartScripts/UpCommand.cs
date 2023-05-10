@@ -6,16 +6,14 @@ public class UpCommand : Command
 {
 
     private Rigidbody2D _rb2D;
-    private Transform _tr;
     private Vector2 _velocity;
     private float _speed;
     private float _fuel;
     private float _fuelUsage;
-    public UpCommand(IEntity entity, Rigidbody2D rb2D, Transform tr, float speed, float fuel, float fuelUsage) : base(entity)
+    public UpCommand(IEntity entity, Rigidbody2D rb2D, float speed, float fuel, float fuelUsage) : base(entity)
     {
         _rb2D = rb2D;
         _speed = speed;
-        _tr = tr;
         _fuel = fuel;
         _fuelUsage = fuelUsage;
     }
@@ -24,7 +22,7 @@ public class UpCommand : Command
         if (_fuel > 0)
         {
             _velocity = _rb2D.velocity;
-            _velocity = _speed * _tr.up * Time.deltaTime;
+            _velocity = _speed * _entity.transform.up * Time.deltaTime;
             _rb2D.velocity += _velocity;
             _fuel -= _fuelUsage * Time.deltaTime;
         }

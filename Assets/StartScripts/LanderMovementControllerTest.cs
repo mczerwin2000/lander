@@ -22,11 +22,20 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     private int lastScore = 0;
     private float lastFuel = 1000;
     private bool outOfMap = false;
+    private bool hitGround = false;
 
     private InputHandler inputHandler = new InputHandler();
     private RotationCommand left;
     private RotationCommand right;
     private UpCommand up;
+
+    // SpriteRenderer animationFire;
+
+    //public static event System.Action<string> NoFuelEvent;
+    public static event System.Action<string> PointsEvent;
+    public static event System.Action<string> Landing2137Event;
+    public static event System.Action<string> CrashLandingEvent;
+    public static event System.Action<string> LostTreasureEvent;
 
     [SerializeField] private Text fuelText;
     [SerializeField] private Text scoreText;
@@ -40,7 +49,8 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         rb2D.constraints = RigidbodyConstraints2D.None;
         left = new RotationCommand(this, rb2D, speedRotate, 1);
         right = new RotationCommand(this, rb2D, speedRotate, -1);
-        up = new UpCommand(this, rb2D, tr, speed, fuel, fuelUsage);
+        up = new UpCommand(this, rb2D, speed, fuel, fuelUsage);
+        //animationFire = GetComponent<SpriteRenderer>();
     }
 
     private void Start()
@@ -56,16 +66,20 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         int layer = _onGround.layer;
         if (layer == 6) { // layer 6 - terrain
             fuel -= 100f + (fuel * 0.2f);
+            hitGround = true;
             Debug.Log("FAIL - hit ground");
             Debug.Log("FUEL: " + fuel);
         }
         else if (layer == 7) { // layer 7 - platforms
             if (tr.rotation.eulerAngles.z < 15 || tr.rotation.eulerAngles.z > 345) // Check acceptable angle for a landing (+/- 15°)
             {
-                if (rb2D.velocity.y > -1.25) // Check acceptable speed for landing (> -1.25m/s)
+                if (rb2D.velocity.y > -15) // Check acceptable speed for landing (> -1.5/s)
                 {
                     PlatformData info = _onGround.GetComponent<PlatformData>();
                     score += info.getPoints();
+                    if (score > 1499) PointsEvent?.Invoke("1500 Points");
+                    if (score > 2136 && !hitGround) Landing2137Event?.Invoke("2137 landing");
+                    if (fuel <= 0) CrashLandingEvent?.Invoke("Crash landing");
                     Debug.Log("SUCCESS");
                     Debug.Log("Score: " + score);
                     Debug.Log("FUEL: " + fuel);
@@ -183,8 +197,9 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     }
 
     IEnumerator lostConnection() {
-        yield return new WaitForSeconds(15f);
+        yield return new WaitForSeconds(10f);
         lostConnectionMenu.SetActive(false);
+        LostTreasureEvent?.Invoke("Lost Treasure");
         Death();
     }
 

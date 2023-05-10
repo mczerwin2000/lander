@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,9 @@ public class mainMenu : MonoBehaviour
     [SerializeField] private InputField up;
     [SerializeField] private InputField left;
     [SerializeField] private InputField right;
+    [SerializeField] private Animator settingsAnim;
+    [SerializeField] private GameObject mainPanel;
+    [SerializeField] private GameObject settingsPanel;
     private string validNumbers = "0123456789";
     private string validletters = "qwertyuiopasdfghjklzxcvbnm".ToUpper() + "0123456789";
 
@@ -29,6 +33,30 @@ public class mainMenu : MonoBehaviour
     {
         Debug.Log("Quitting the game...");
         Application.Quit();
+    }
+
+    public void toSettings()
+    {
+        StartCoroutine(settings1(false,true));
+        StartCoroutine(settings2());
+        //settingsAnim.Play("Crossfade.CrossFadeSetting", 0, 1f);
+        Debug.Log("Animation");
+    }
+
+    public void goBack() {
+        StartCoroutine(settings1(true,false));
+        StartCoroutine(settings2());
+    }
+    IEnumerator settings1(bool menu,bool settings) {
+        settingsAnim.SetTrigger("Settings");
+        yield return new WaitForSecondsRealtime(0.5f);
+        mainPanel.SetActive(menu);
+        settingsPanel.SetActive(settings);
+    }
+
+    IEnumerator settings2()
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
     }
 
     public void optionProfile(int id) { 
