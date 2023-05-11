@@ -75,9 +75,8 @@ public class Achievement : MonoBehaviour
             panel.SetActive(true);
             isDoing = true;
             string achievement = achievementQueue.Dequeue();
-            Debug.Log(achievement);
             showText.text = "Achiement Unlock: " + achievement;
-            yield return new WaitForSecondsRealtime(5f); // Wait for 5 seconds before processing the next achievement
+            yield return new WaitForSecondsRealtime(5f);
             panel.SetActive(false);
             isDoing = false;
         }

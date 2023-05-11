@@ -16,6 +16,8 @@ public class mainMenu : MonoBehaviour
     [SerializeField] private Animator settingsAnim;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private Text highestScore;
+    [SerializeField] private Text achievementText;
     private string validNumbers = "0123456789";
     private string validletters = "qwertyuiopasdfghjklzxcvbnm".ToUpper() + "0123456789";
 
@@ -23,6 +25,8 @@ public class mainMenu : MonoBehaviour
     {
         SaveGame.LoadProgress();
         dropDown.value = SaveGame.getProfile() - 1;
+        highestScore.text = "HIGHEST SCORE: " + SaveGame.getHighestScore();
+        achievementText.text = "ACHIEMENT UNLOCKED: " + countAchievements() + "/4";
         printInputField();
     }
     public void PlayGame() {
@@ -62,6 +66,8 @@ public class mainMenu : MonoBehaviour
     public void optionProfile(int id) { 
         Debug.Log("Change profile to " + (id+1).ToString());
         SaveGame.setProfile(id+1);
+        highestScore.text = "HIGHEST SCORE: " + SaveGame.getHighestScore();
+        achievementText.text = "ACHIEMENT UNLOCKED: " + countAchievements() + "/4";
         printInputField();
     }
 
@@ -114,5 +120,14 @@ public class mainMenu : MonoBehaviour
                 printInputField();
             }
         }
+    }
+
+    private int countAchievements() {
+        int count = 0;
+        if (SaveGame.pointsAch) count++;
+        if (SaveGame.crashLandingAch) count++;
+        if (SaveGame.landing2137Ach) count++;
+        if(SaveGame.lostTreasureAch) count++;
+        return count;
     }
 }

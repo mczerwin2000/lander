@@ -73,7 +73,7 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         else if (layer == 7) { // layer 7 - platforms
             if (tr.rotation.eulerAngles.z < 15 || tr.rotation.eulerAngles.z > 345) // Check acceptable angle for a landing (+/- 15°)
             {
-                if (rb2D.velocity.y > -15) // Check acceptable speed for landing (> -1.5/s)
+                if (rb2D.velocity.y > -1.5) // Check acceptable speed for landing (> -1.5/s)
                 {
                     PlatformData info = _onGround.GetComponent<PlatformData>();
                     score += info.getPoints();
@@ -109,11 +109,11 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     // If it has a fuel,it return the lander to start position
     // Otherwise it's the end of game
     IEnumerator Freeze() {
-        scoreText.text = "Score: " + score.ToString();
+        scoreText.text = "SCORE: " + score.ToString();
         lastFuel= fuel;
         lastScore = score;
         if (score > SaveGame.getHighestScore()) {
-            highestScoreText.text = "Highest Score: " + score.ToString();
+            highestScoreText.text = "HIGHEST SCORE: " + score.ToString();
             SaveGame.setHighestScore(score);
             SaveGame.SaveProgress();
         }
@@ -148,7 +148,7 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         }
         inputHandler.Up(ButtonSettings.KeyUp, up);
         fuel = up.GetFuel();
-        fuelText.text = "Fuel: " + ((int)fuel).ToString();
+        fuelText.text = "FUEL: " + ((int)fuel).ToString();
     }
 
     private void Death()
