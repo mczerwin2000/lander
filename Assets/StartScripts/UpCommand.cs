@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class UpCommand : Command
 {
-
     private Rigidbody2D _rb2D;
     private Vector2 _velocity;
     private float _speed;
@@ -27,14 +26,10 @@ public class UpCommand : Command
             _fuel -= _fuelUsage * Time.deltaTime;
         }
     }
-
     public float GetFuel() {
         return _fuel;
     }
-
     public void setFuel(float newFule) { 
         _fuel= newFule;
     }
-    // Start is called before the first frame update
-
 }

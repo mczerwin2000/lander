@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RotationCommand : Command
 {
-
     private Rigidbody2D _rb2D;
     private float _rotationSpeed;
     private int _leftRight;
@@ -19,7 +18,4 @@ public class RotationCommand : Command
 
         _rb2D.rotation += _rotationSpeed * Time.deltaTime * _leftRight;
     }
-
-    // Start is called before the first frame update
-
 }

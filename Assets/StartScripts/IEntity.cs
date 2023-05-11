@@ -4,9 +4,5 @@ using UnityEngine;
 
 public interface IEntity
 {
-    // Start is called before the first frame update
-    Transform transform
-    {
-        get;
-    }
+    Transform transform { get; }
 }

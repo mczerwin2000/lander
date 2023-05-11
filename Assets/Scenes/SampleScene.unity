@@ -3038,6 +3038,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 326686689}
     - target: {fileID: 5418668276962037, guid: 8d45ea65e93a14943b84814e238a8f5a, type: 3}
+      propertyPath: fuelUsage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5418668276962037, guid: 8d45ea65e93a14943b84814e238a8f5a, type: 3}
       propertyPath: scoreText
       value: 
       objectReference: {fileID: 1077709984}

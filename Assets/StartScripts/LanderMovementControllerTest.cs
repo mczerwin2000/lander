@@ -24,13 +24,6 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     private bool outOfMap = false;
     private bool hitGround = false;
 
-    private InputHandler inputHandler = new InputHandler();
-    private RotationCommand left;
-    private RotationCommand right;
-    private UpCommand up;
-
-    // SpriteRenderer animationFire;
-
     //public static event System.Action<string> NoFuelEvent;
     public static event System.Action<string> PointsEvent;
     public static event System.Action<string> Landing2137Event;
@@ -41,7 +34,10 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highestScoreText;
 
-    //[SerializeField] private GameObject MenuPause;
+    private InputHandler inputHandler = new InputHandler();
+    private RotationCommand left;
+    private RotationCommand right;
+    private UpCommand up;
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -163,6 +159,7 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         rb2D.velocity = new Vector2(0, 0);    // reset a speed
         rb2D.rotation = 0;
         score = lastScore;
+        scoreText.text = "SCORE: " + score.ToString();
         fuel = lastFuel;
         outOfMap = false;
         StopCoroutine("lostConnection");
@@ -176,6 +173,7 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
         rb2D.velocity = new Vector2(0, 0);    // reset a speed
         rb2D.rotation = 0;
         score = 0;
+        scoreText.text = "SCORE: " + score.ToString();
         fuel = 1000;
         outOfMap = false;
         StopCoroutine("lostConnection");
@@ -197,7 +195,7 @@ public class LanderMovementControllerTest : MonoBehaviour, IEntity
     }
 
     IEnumerator lostConnection() {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
         lostConnectionMenu.SetActive(false);
         LostTreasureEvent?.Invoke("Lost Treasure");
         Death();
